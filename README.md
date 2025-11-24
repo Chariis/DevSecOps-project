@@ -12,7 +12,84 @@ This project outlines the steps for deploying a Netflix Clone application (built
 - [Phase 7: Cleanup](#phase-7-cleanup)
 
 ---
+## 🏗️ Architecture
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff9900', 'edgeLabelBackground':'#ffffff', 'tertiaryColor': '#F6F8FA'}}}%%
+graph TD
+    subgraph "Source & Triggers"
+        Dev[👨‍💻 Developer]
+        GitHub[📂 GitHub Repository<br/>(Source Code)]
+        TMDB[🎬 TMDB API]
+    end
 
+    subgraph "CI Server (AWS EC2)"
+        Jenkins[⚙️ Jenkins Server]
+        
+        subgraph "Security & Analysis"
+            OWASP[🛡️ OWASP<br/>Dependency Check]
+            Sonar[🔍 SonarQube<br/>(Code Quality)]
+            Trivy[u'📦 Trivy<br/>(File & Image Scan)']
+        end
+        
+        DockerBuild[🐳 Docker Build]
+    end
+
+    subgraph "Artifact Management"
+        DockerHub[🗄️ DockerHub<br/>Registry]
+    end
+
+    subgraph "CD & Deployment (Kubernetes)"
+        ArgoCD[🐙 ArgoCD<br/>(GitOps Controller)]
+        K8sCluster[☸️ Kubernetes Cluster]
+        NetflixApp[📱 Netflix App<br/>(Pod)]
+    end
+
+    subgraph "Observability"
+        Prometheus[🔥 Prometheus<br/>(Time Series DB)]
+        Grafana[📊 Grafana<br/>(Visualization)]
+        NodeExp[📈 Node Exporter]
+        Email[📧 Email Notification]
+    end
+
+    %% Flow Connections
+    Dev -->|Push Code| GitHub
+    GitHub -->|Webhook/Poll| Jenkins
+    
+    %% CI Flow
+    Jenkins -->|1. SCA Scan| OWASP
+    Jenkins -->|2. SAST Scan| Sonar
+    Jenkins -->|3. File Scan| Trivy
+    Jenkins -->|4. Build & Tag| DockerBuild
+    TMDB -.->|API Key Injection| DockerBuild
+    DockerBuild -->|5. Image Scan| Trivy
+    DockerBuild -->|6. Push Image| DockerHub
+    
+    %% CD Flow
+    ArgoCD -->|Sync Manifests| GitHub
+    ArgoCD -->|Pull Image| DockerHub
+    ArgoCD -->|Deploy| NetflixApp
+    NetflixApp -.->|Run on| K8sCluster
+
+    %% Monitoring Flow
+    NodeExp -->|Metrics| Jenkins
+    Prometheus -->|Scrape Metrics| Jenkins
+    Prometheus -->|Scrape Metrics| NodeExp
+    Prometheus -->|Scrape Metrics| NetflixApp
+    Grafana -->|Query| Prometheus
+    
+    %% Notifications
+    Jenkins -.->|Build Status| Email
+
+    %% Styles
+    style Jenkins fill:#fff3e0,stroke:#fb8c00
+    style K8sCluster fill:#e1f5fe,stroke:#039be5
+    style DockerHub fill:#e3f2fd,stroke:#1565c0
+    style Sonar fill:#ffebee,stroke:#e53935
+    style Trivy fill:#ffebee,stroke:#e53935
+    style OWASP fill:#ffebee,stroke:#e53935
+    style Grafana fill:#f3e5f5,stroke:#8e24aa
+  ```
+  
 ## Phase 1: Initial Setup and Deployment
 
 ### Step 1: Launch and Connect to EC2 Instance
