@@ -18,7 +18,7 @@ This project outlines the steps for deploying a Netflix Clone application (built
 graph TD
     subgraph "Source & Triggers"
         Dev[👨‍💻 Developer]
-        GitHub[📂 GitHub Repository<br/>(Source Code)]
+        GitHub["📂 GitHub Repository<br/>(Source Code)"]
         TMDB[🎬 TMDB API]
     end
 
@@ -26,27 +26,27 @@ graph TD
         Jenkins[⚙️ Jenkins Server]
         
         subgraph "Security & Analysis"
-            OWASP[🛡️ OWASP<br/>Dependency Check]
-            Sonar[🔍 SonarQube<br/>(Code Quality)]
-            Trivy[u'📦 Trivy<br/>(File & Image Scan)']
+            OWASP["🛡️ OWASP<br/>Dependency Check"]
+            Sonar["🔍 SonarQube<br/>(Code Quality)"]
+            Trivy["📦 Trivy<br/>(File & Image Scan)"]
         end
         
         DockerBuild[🐳 Docker Build]
     end
 
     subgraph "Artifact Management"
-        DockerHub[🗄️ DockerHub<br/>Registry]
+        DockerHub["🗄️ DockerHub<br/>Registry"]
     end
 
     subgraph "CD & Deployment (Kubernetes)"
-        ArgoCD[🐙 ArgoCD<br/>(GitOps Controller)]
+        ArgoCD["🐙 ArgoCD<br/>(GitOps Controller)"]
         K8sCluster[☸️ Kubernetes Cluster]
-        NetflixApp[📱 Netflix App<br/>(Pod)]
+        NetflixApp["📱 Netflix App<br/>(Pod)"]
     end
 
     subgraph "Observability"
-        Prometheus[🔥 Prometheus<br/>(Time Series DB)]
-        Grafana[📊 Grafana<br/>(Visualization)]
+        Prometheus["🔥 Prometheus<br/>(Time Series DB)"]
+        Grafana["📊 Grafana<br/>(Visualization)"]
         NodeExp[📈 Node Exporter]
         Email[📧 Email Notification]
     end
@@ -87,9 +87,8 @@ graph TD
     style Sonar fill:#ffebee,stroke:#e53935
     style Trivy fill:#ffebee,stroke:#e53935
     style OWASP fill:#ffebee,stroke:#e53935
-    style Grafana fill:#f3e5f5,stroke:#8e24aa
   ```
-  
+
 ## Phase 1: Initial Setup and Deployment
 
 ### Step 1: Launch and Connect to EC2 Instance
